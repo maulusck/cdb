@@ -1,0 +1,3 @@
+
+CHROOT_DIR="/home/openassistant/chroot/oa-arch"
+PREFIX="/home/openassistant/chroot/oa-arch"

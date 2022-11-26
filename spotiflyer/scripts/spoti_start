@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# start vnc server on :1
+su -c "cd && vncserver :1" _vnc
+# start noVNC
+su -c "/usr/local/bin/novnc_start" _vnc

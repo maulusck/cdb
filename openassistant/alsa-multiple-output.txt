@@ -1,0 +1,6 @@
+# /etc/asound.conf
+pcm.!default {
+    type asym
+    playback.pcm "plughw:0"
+    capture.pcm  "plughw:1"
+}

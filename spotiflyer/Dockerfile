@@ -1,0 +1,50 @@
+#FROM debian:bullseye
+FROM debian:latest
+
+# set up base system
+RUN apt update && apt full-upgrade -y && apt install -y wget curl git tightvncserver jq git python3 procps ffmpeg
+
+# get package
+ARG AUTHOR=Shabinder
+ARG REPO=SpotiFlyer
+RUN wget -q $(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].browser_download_url" | grep deb)
+
+# install package - fix for xdg-desktop-menu
+RUN	mkdir /usr/share/desktop-directories && \
+	apt install -y ./$(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].name" | grep deb) && \
+	ln -sfv /opt/spotiflyer/bin/SpotiFlyer /usr/local/bin/SpotiFlyer
+
+# setup VNC
+ARG VNC_PASSWD=test
+RUN	useradd -s /bin/sh -m -d /home/vnc _vnc && \
+	mkdir -p /home/vnc/.vnc && \
+	echo $VNC_PASSWD | vncpasswd -f > /home/vnc/.vnc/passwd && \
+	chmod 400 /home/vnc/.vnc/passwd  && \
+	echo "exec /usr/local/bin/SpotiFlyer" > /home/vnc/.vnc/xstartup && \
+	chmod 700 /home/vnc/.vnc/xstartup
+
+# setup noVNC
+RUN	git clone https://github.com/novnc/noVNC /usr/local/bin/noVNC && \
+	git clone https://github.com/novnc/websockify /usr/local/bin/noVNC/utils/websockify && \
+        ln -sfv /usr/local/bin/noVNC/vnc.html /usr/local/bin/noVNC/index.html && \
+	mkdir -p /home/vnc/certs && \
+        openssl req -new -x509 -days 3650 -nodes -out /home/vnc/certs/self.pem -keyout /home/vnc/certs/self.pem \
+                -subj "/C=XX/ST=Nowhere/L=Nothing/O=None. /OU=Nothing Department/CN=localhost"
+COPY scripts/novnc_start /usr/local/bin/novnc_start
+RUN chmod 755 /usr/local/bin/novnc_start && chown root:_vnc /usr/local/bin/noVNC/utils && chmod 775 /usr/local/bin/noVNC/utils
+
+# fix permissions
+RUN chown -R _vnc:_vnc /home/vnc
+
+# open ports
+EXPOSE 8443
+
+# set up launcher
+COPY scripts/spoti_start /usr/local/bin/spoti_start
+RUN chmod 755 /usr/local/bin/spoti_start
+
+# cleanup
+RUN rm -rf /var/lib/apt/lists/* && rm -rf /scripts
+
+# start
+ENTRYPOINT ["/usr/local/bin/spoti_start"]
