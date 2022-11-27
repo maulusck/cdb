@@ -2,6 +2,8 @@
 FROM debian:latest
 
 # set up base system
+ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt update && apt full-upgrade -y && apt install -y wget curl git tigervnc-standalone-server tigervnc-xorg-extension jq git python3 procps ffmpeg
 
 # get package
