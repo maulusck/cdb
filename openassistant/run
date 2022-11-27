@@ -1,6 +1,0 @@
-#!/bin/sh
-
-[ -r conf ] && . ./conf
-
-[ -z "$(mount | grep $CHROOT_DIR)" ] && mount --bind $CHROOT_DIR $CHROOT_DIR
-exec xchroot $CHROOT_DIR su -c "/usr/local/bin/oa" oa

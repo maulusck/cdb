@@ -1,4 +1,4 @@
 #!/bin/sh
 /usr/local/bin/noVNC/utils/novnc_proxy \
         --listen 8443 --vnc localhost:5901 \
-        --cert /home/vnc/certs/self.pem --ssl-only
+        --cert /home/spotiflyer/certs/self.pem --ssl-only
