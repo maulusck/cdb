@@ -8,7 +8,7 @@ RUN adduser -D -h /home/qbtnox qbtnox
 RUN echo "echo y | exec qbittorrent-nox" > /usr/local/bin/qbtnox && chmod 750 /usr/local/bin/qbtnox && chown root:qbtnox /usr/local/bin/qbtnox
 # cleanup
 RUN rm -rf /var/cache/apk/*
-# set priv
-USER qbtnox # --user root if you want to mount directories
+# set priv | run with --user root if you want to mount directories
+USER qbtnox
 # set init
 ENTRYPOINT "/usr/local/bin/qbtnox"
