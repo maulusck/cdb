@@ -1,6 +1,6 @@
 #!/bin/sh
 
 # start vnc server on :1
-su -c "cd && vncserver :1" _vnc
+su -c "cd && vncserver :1" spotiflyer
 # start noVNC
-su -c "/usr/local/bin/novnc_start" _vnc
+su -c "/usr/local/bin/novnc_start" spotiflyer

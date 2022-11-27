@@ -44,7 +44,7 @@ COPY scripts/spoti_start /usr/local/bin/spoti_start
 RUN chmod 755 /usr/local/bin/spoti_start
 
 # cleanup
-RUN rm -rf /var/lib/apt/lists/* && rm -rf /scripts && rm -rf /usr/share/icons /usr/share/doc
+RUN rm -rf /var/lib/apt/lists/* && rm -rf /scripts && rm -rf /usr/share/{icons,doc,man}
 
 # start
 ENTRYPOINT ["/usr/local/bin/spoti_start"]
