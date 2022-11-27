@@ -9,6 +9,6 @@ RUN echo "echo y | exec qbittorrent-nox" > /usr/local/bin/qbtnox && chmod 750 /u
 # cleanup
 RUN rm -rf /var/cache/apk/*
 # set priv
-USER qbtnox
+USER qbtnox # --user root if you want to mount directories
 # set init
 ENTRYPOINT "/usr/local/bin/qbtnox"
