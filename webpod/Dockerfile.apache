@@ -1,0 +1,20 @@
+FROM alpine:latest
+
+LABEL maintainer="maulusck <maulusck at pm dot me>"
+
+# this config uses FPM by default, change php81-fpm to php81-cgi to use that
+RUN apk update && apk upgrade && apk add apache2 php81 php81-apache2 php81-fpm openrc
+
+# wipe defaults configs and copy our own
+COPY conf/apache2 /conf
+RUN rm -rf /etc/apache2/* && cp -rf /conf/* /etc/apache2/ && \
+	find /etc/apache2 -type d -exec chmod 755 {} \; && \
+	find /etc/apache2 -type f -exec chmod 644 {} \; && \
+	chown -R root:root /etc/apache2
+
+# make init 
+RUN echo "/etc/init.d/apache2 start && tail -f /var/log/apache2/{access,error}.log" > /init && \
+	sed -i 's|\\||g' /init && chmod 700 /init
+
+# run services and watch logs
+ENTRYPOINT /init

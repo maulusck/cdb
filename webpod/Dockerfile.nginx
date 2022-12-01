@@ -1,0 +1,29 @@
+FROM alpine:latest
+
+LABEL maintainer="maulusck <maulusck at pm dot me>"
+
+# install nginx + modules
+RUN apk update && apk upgrade && apk add nginx nginx-openrc openssl certbot openrc && \
+	# good enough hack till nginx releases 2.x
+	apk add $(apk search nginx  | grep mod | awk -F "-1" '{print$1}')
+
+# wipe defaults configs and copy our own
+COPY conf/nginx /conf
+RUN rm -rf /etc/nginx/* && cp -rf /conf/* /etc/nginx/ && \
+	find /etc/nginx -type d -exec chmod 755 {} \; && \
+	find /etc/nginx -type f -exec chmod 644 {} \; && \
+	chown -R root:root /etc/nginx && \
+	\ # generate randomness
+	openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096
+
+# cleanup
+RUN rm -rf /conf /var/cache/apk/*
+
+### NEED TO FIGURE OUT HOW TO HANDLE CERTIFICATES!!
+
+# make init script
+RUN echo "nginx -t && /etc/init.d/nginx start && tail -f /var/log/nginx/{access,error}.log" > /init && \
+	sed -i 's|\\||g' /init && chmod 700 /init
+
+# run services and watch logs
+ENTRYPOINT /init
