@@ -16,6 +16,9 @@ RUN rm -rf /etc/nginx/* && cp -rf /conf/* /etc/nginx/ && \
 	\ # generate randomness
 	openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096
 
+# copy certs if present
+COPY certs/* /etc/ssl/private
+
 # cleanup
 RUN rm -rf /conf /var/cache/apk/*
 
