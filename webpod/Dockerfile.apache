@@ -16,5 +16,8 @@ RUN rm -rf /etc/apache2/* && cp -rf /conf/* /etc/apache2/ && \
 RUN echo "/etc/init.d/apache2 start && tail -f /var/log/apache2/{access,error}.log" > /init && \
 	sed -i 's|\\||g' /init && chmod 700 /init
 
+# expose ports
+EXPOSE 80
+
 # run services and watch logs
 ENTRYPOINT /init

@@ -32,5 +32,8 @@ RUN rm -rf /conf /var/cache/apk/*
 RUN echo "nginx -t && /etc/init.d/nginx start && tail -f /var/log/nginx/{access,error}.log" > /init && \
 	sed -i 's|\\||g' /init && chmod 700 /init
 
+# expose ports
+EXPOSE 80 443
+
 # run services and watch logs
 ENTRYPOINT /init

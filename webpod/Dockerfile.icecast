@@ -15,5 +15,8 @@ RUN rm -rf /conf /var/cache/apk/*
 RUN echo "/etc/init.d/icecast start && tail -f /var/log/icecast/{access,error}.log" > /init && \
 	sed -i 's|\\||g' /init && chmod 700 /init
 
+# expose ports
+EXPOSE 8000
+
 # run services and watch logs
 ENTRYPOINT /init
