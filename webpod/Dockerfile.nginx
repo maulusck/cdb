@@ -2,8 +2,12 @@ FROM alpine:latest
 
 LABEL maintainer="maulusck <maulusck at pm dot me>"
 
+# Support for https will be added..
+#ENV EMAIL="root@localhost" \
+#	DOMAIN="localhost.lan"
+
 # install nginx + modules
-RUN apk update && apk upgrade && apk add nginx nginx-openrc openssl certbot openrc && \
+RUN apk update && apk upgrade && apk add nginx nginx-openrc openssl openrc && \
 	# good enough hack till nginx releases 2.x
 	apk add $(apk search nginx  | grep mod | awk -F "-1" '{print$1}')
 
