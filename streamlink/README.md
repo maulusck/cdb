@@ -20,6 +20,4 @@ Also consider aliasing it to a default download directory, i.e.:
 ```
 alias streamlink='podman run --rm -it -v <default_download_directory:/<download_dir> -o /<download_dir>/stream-$(date -Iseconds | awk -F "+" \'{print$1}\').mp4 streamlink-otg'
 ```
-or using the `run.sh` script provided and symlink that on `$PATH`.
-
-
+or using the `run.sh` script provided and symlink that somewhere on `$PATH`.
