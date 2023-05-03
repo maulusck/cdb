@@ -1,7 +1,7 @@
-!/bin/sh
+#!/bin/sh
 set -e
 
 # get data
 . ./.env
 
-podman run -v $WEBROOT:/var/www/localhost $REPO/$IMAGE
+podman run -p $WEBPORT:80 -v $WEBROOT:/var/www/localhost -v $CONFIG:/etc/lighttpd $REPO/$IMAGE
