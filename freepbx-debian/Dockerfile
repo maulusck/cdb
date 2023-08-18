@@ -1,5 +1,5 @@
 FROM localhost/debian-s6-init:latest
-LABEL maintainer="Matteo Ferrante (m.ferrante at onevo dot it)"
+LABEL maintainer="Maulusck Fringueley (maulusck at pm dot me)"
 LABEL creator="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set defaults

@@ -1,4 +1,4 @@
-## 5.2.1 2022-11-30 <m.ferrante at onevo dot it>
+## 5.2.1 2022-11-30 <maulusck at pm dot me>
 
    ### Changed
       - updated debian version and packages version (big change) i.e. Asterisk 17.9.4, freePBX 16.0.26, Node 18 LTS...
