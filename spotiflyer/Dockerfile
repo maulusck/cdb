@@ -9,7 +9,9 @@ RUN apt update && apt full-upgrade -y && apt install -y wget curl git tigervnc-s
 # get package
 ARG AUTHOR=Shabinder
 ARG REPO=SpotiFlyer
-RUN wget -q $(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].browser_download_url" | grep deb)
+#RUN wget -q $(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].browser_download_url" | grep deb)
+# since v3.6.4 SpotiFlyer does not exist anymore
+RUN wget -q 'https://github.com//releases/download/v3.6.3/spotiflyer_3.6.3-1_amd64.deb'
 
 # install package - fix for xdg-desktop-menu
 RUN	mkdir /usr/share/desktop-directories && \
