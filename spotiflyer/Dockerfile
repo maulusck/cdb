@@ -14,8 +14,9 @@ ARG REPO=SpotiFlyer
 RUN wget -q "https://github.com/$AUTHOR/$REPO/releases/download/v3.6.3/spotiflyer_3.6.3-1_amd64.deb"
 
 # install package - fix for xdg-desktop-menu
+# backup string: apt install -y ./$(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].name" | grep deb) && \
 RUN	mkdir /usr/share/desktop-directories && \
-	apt install -y ./$(curl -s https://api.github.com/repos/$AUTHOR/$REPO/releases/latest | jq -r ".assets[].name" | grep deb) && \
+	apt install -y ./spotiflyer_3.6.3-1_amd64.deb) && \
 	ln -sfv /opt/spotiflyer/bin/SpotiFlyer /usr/local/bin/SpotiFlyer
 
 # setup VNC
