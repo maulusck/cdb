@@ -1,0 +1,26 @@
+FROM alpine:latest
+
+ENV PHP_OPCACHE="1"
+ENV PHP_MEMORY_LIMIT="256M"
+ENV PHP_MAX_EXECUTION_TIME="30"
+
+RUN apk update && apk add --no-cache \
+	php84 \
+	php84-fpm \
+	php84-gd \
+	php84-json \
+	php84-mbstring \
+	php84-mysqlnd \
+	php84-opcache \
+	php84-pdo \
+	php84-pgsql \
+	php84-sqlite3 \
+	php84-xml \
+	php84-zlib \
+	&& rm -rf /var/cache/apk/*
+
+WORKDIR /var/www/html
+
+EXPOSE 9000
+
+CMD ["/usr/sbin/php-fpm84", "-F"]
