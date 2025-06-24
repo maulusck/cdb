@@ -1,0 +1,51 @@
+FROM alpine:latest
+
+ENV PHP_OPCACHE="1"
+ENV PHP_MEMORY_LIMIT="256M"
+ENV PHP_MAX_EXECUTION_TIME="30"
+
+RUN apk update && apk add --no-cache \
+        lighttpd \
+	php84 \
+	php84-dom \
+	php84-fpm \
+	php84-gd \
+	php84-json \
+	php84-mbstring \
+	php84-mysqli \
+	php84-mysqlnd \
+	php84-opcache \
+	php84-pdo \
+	php84-pgsql \
+	php84-sqlite3 \
+	php84-tokenizer \
+	php84-xml \
+	php84-zlib \
+	&& rm -rf /var/cache/apk/*
+
+# Configure logging to stdout/stderr
+RUN sed -i \
+        -e 's|^\(accesslog\.filename\s*=\s*\).*$|\1"/dev/stdout"|' \
+        -e 's|^\(server\.errorlog\s*=\s*\).*$|\1"/dev/stderr"|' \
+        /etc/lighttpd/lighttpd.conf
+
+# Other configurations (fastcgi and basedir)
+RUN sed -i \
+        -e 's/^#\s*include\s*\(.*mod_fastcgi_fpm.conf.*\)$/include \1/' \
+        -e 's|\(var\.basedir\s*=\s*\)"/var/www/localhost"|\1"/var/www/html"|' \
+        /etc/lighttpd/lighttpd.conf
+
+#RUN sed -i \
+#        -e 's/^#\s*include\s*\(.*mod_fastcgi_fpm.conf.*\)$/include \1/' \
+#	-e 's|\(var\.basedir\s*=\s*\)"/var/www/localhost"|\1"/var/www/html"|' \
+#        /etc/lighttpd/lighttpd.conf
+
+RUN sed -i \
+        -e 's/^#\s*include\s*\(.*mod_fastcgi_fpm.conf.*\)$/include \1/' \
+        /etc/lighttpd/lighttpd.conf
+
+WORKDIR /var/www/html
+
+EXPOSE 80
+
+CMD ["/bin/sh", "-c", "php-fpm84 -D && exec lighttpd -D -f /etc/lighttpd/lighttpd.conf"]
