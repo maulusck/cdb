@@ -21,7 +21,7 @@ while [ "$i" -lt "$count" ]; do
 
     cat > "$OUT_DIR/${fname}.conf" <<EOF
 location ${path} {
-    proxy_pass http://host.docker.internal:${port}${path};
+    proxy_pass http://127.0.0.1:${port}${path};
     proxy_http_version 1.1;
     proxy_set_header Host \$host;
     proxy_set_header X-Real-IP \$remote_addr;
