@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROXY HUB</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&family=DM+Sans:wght@300;400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #0c0d0f;
+    --surface: #13151a;
+    --border:  #1f2229;
+    --accent:  #e8ff57;
+    --dim:     #3a3f4a;
+    --text:    #c8cdd8;
+    --muted:   #555e6e;
+    --up:      #44ff88;
+    --down:    #ff4455;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0 clamp(16px, 4vw, 48px);
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .wordmark {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 900;
+    font-size: clamp(22px, 3vw, 30px);
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .tagline {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    margin-left: auto;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--up);
+    box-shadow: 0 0 8px var(--up);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+  }
+
+  /* ── Grid ── */
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    flex: 1;
+  }
+
+  .card {
+    background: var(--surface);
+    padding: 28px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--dim);
+    transition: background 0.15s;
+  }
+
+  .card:hover {
+    background: #181b21;
+  }
+
+  .card:hover::before {
+    background: var(--accent);
+  }
+
+  .card-icon {
+    font-size: 24px;
+    line-height: 1;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+
+  .card:hover .card-icon {
+    color: var(--accent);
+  }
+
+  .card-name {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    color: #eef0f5;
+    text-transform: uppercase;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    flex: 1;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .card-port {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    background: var(--bg);
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+  }
+
+  .card-path {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .card-arrow {
+    position: absolute;
+    bottom: 22px; right: 20px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 18px;
+    color: var(--dim);
+    transition: color 0.15s, transform 0.15s;
+  }
+
+  .card:hover .card-arrow {
+    color: var(--accent);
+    transform: translate(3px, -2px);
+  }
+
+  /* ── Empty / error ── */
+  .message {
+    grid-column: 1/-1;
+    padding: 60px 24px;
+    text-align: center;
+    font-family: 'Inconsolata', monospace;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 18px 0 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer .updated { margin-left: auto; }
+
+  /* ── Stagger in ── */
+  .card {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadein 0.3s forwards;
+  }
+
+  @keyframes fadein {
+    to { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="wordmark">PROXY HUB</span>
+  <span class="tagline">reverse proxy dashboard</span>
+  <span class="status-dot" title="nginx running"></span>
+</header>
+
+<div id="grid">
+  <div class="message">Loading services…</div>
+</div>
+
+<footer>
+  <span>NGINX / ALPINE</span>
+  <span>·</span>
+  <span id="svc-count">—</span>
+  <span class="updated" id="ts">—</span>
+</footer>
+
+<script>
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('svc-count');
+  const tsEl = document.getElementById('ts');
+
+  async function load() {
+    try {
+      const r = await fetch('/services.json?_=' + Date.now());
+      if (!r.ok) throw new Error(r.statusText);
+      const services = await r.json();
+      render(services);
+    } catch (e) {
+      grid.innerHTML = `<div class="message">ERROR: ${e.message}</div>`;
+    }
+  }
+
+  function render(services) {
+    if (!services.length) {
+      grid.innerHTML = '<div class="message">NO SERVICES DEFINED</div>';
+      return;
+    }
+
+    grid.innerHTML = services.map((s, i) => `
+      <a class="card" href="${s.path}" style="animation-delay:${i * 45}ms">
+        <div class="card-icon">${s.icon || '◆'}</div>
+        <div class="card-name">${esc(s.name)}</div>
+        <div class="card-desc">${esc(s.description || '')}</div>
+        <div class="card-meta">
+          <span class="card-port">:${s.port}</span>
+          <span class="card-path">${esc(s.path)}</span>
+        </div>
+        <span class="card-arrow">↗</span>
+      </a>
+    `).join('');
+
+    countEl.textContent = `${services.length} SERVICE${services.length !== 1 ? 'S' : ''}`;
+    tsEl.textContent = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  load();
+
+  // Poll for changes every 10s (lightweight, no SSE needed)
+  setInterval(load, 10_000);
+</script>
+</body>
+</html>

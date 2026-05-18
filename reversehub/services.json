@@ -1,0 +1,30 @@
+[
+  {
+    "name": "JupyterLab",
+    "description": "Interactive notebooks",
+    "icon": "⬡",
+    "port": 8888,
+    "path": "/jupyter/"
+  },
+  {
+    "name": "Grafana",
+    "description": "Metrics & dashboards",
+    "icon": "◈",
+    "port": 3000,
+    "path": "/grafana/"
+  },
+  {
+    "name": "Code Server",
+    "description": "VS Code in browser",
+    "icon": "◧",
+    "port": 8080,
+    "path": "/code/"
+  },
+  {
+    "name": "MLflow",
+    "description": "ML experiment tracking",
+    "icon": "◉",
+    "port": 5000,
+    "path": "/mlflow/"
+  }
+]
