@@ -3,6 +3,7 @@
 set -e
 
 NAME="reversehub"
+PORT="${1:-8080}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if podman container exists "$NAME" 2>/dev/null; then
@@ -13,7 +14,7 @@ fi
 echo "==> building $NAME"
 podman build -t "$NAME" "$DIR" -q
 
-echo "==> starting $NAME → http://127.0.0.1:80"
+echo "==> starting $NAME → http://127.0.0.1:${PORT}"
 podman run -d \
     --name "$NAME" \
     --rm \
