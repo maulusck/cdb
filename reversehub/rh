@@ -1,0 +1,22 @@
+#!/bin/sh
+# rh — reversehub: idempotent kill+build+start
+set -e
+
+NAME="reversehub"
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if podman container exists "$NAME" 2>/dev/null; then
+    echo "==> stopping $NAME"
+    podman rm -f "$NAME" >/dev/null
+fi
+
+echo "==> building $NAME"
+podman build -t "$NAME" "$DIR" -q
+
+echo "==> starting $NAME → http://127.0.0.1:80"
+podman run -d \
+    --name "$NAME" \
+    --rm \
+    --network host \
+    -v "$DIR/services.json":/usr/share/nginx/html/services.json:ro \
+    "$NAME"
