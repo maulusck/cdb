@@ -27,7 +27,6 @@
     min-height:100vh;
     display:flex;justify-content:center;align-items:flex-start;
   }
-  /* faint stone grain */
   body::after{
     content:'';position:fixed;inset:0;pointer-events:none;opacity:.5;
     background:
@@ -36,7 +35,7 @@
   }
 
   .panel{
-    width:100%;max-width:840px;
+    width:100%;max-width:880px;
     background:var(--panel);
     border:2px solid var(--ink);
     box-shadow:6px 6px 0 var(--line);
@@ -44,9 +43,7 @@
 
   .titlebar{
     display:flex;justify-content:space-between;align-items:center;
-    padding:12px 18px;
-    background:var(--ink);
-    color:var(--bg);
+    padding:12px 18px;background:var(--ink);color:var(--bg);
   }
   .titlebar .name{letter-spacing:.32em;text-transform:uppercase;font-size:15px}
   .titlebar .stat{font-size:12px;color:var(--hair)}
@@ -62,11 +59,18 @@
   tbody tr:last-child{border-bottom:none}
   tbody tr:hover{background:var(--ink);color:var(--bg)}
   tbody tr:hover td{color:var(--bg)}
+  tbody tr:hover .tag{border-color:var(--bg);color:var(--bg)}
   td{padding:11px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   td.id{color:var(--dim);width:1%}
-  td.path{letter-spacing:.04em}
   td.dim{color:var(--dim)}
+  td.route{letter-spacing:.04em}
   td.up{text-align:right;color:var(--dim)}
+
+  .tag{
+    display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--line);color:var(--dim);
+    padding:1px 6px;border-radius:1px;
+  }
 
   .msg{padding:30px 18px;color:var(--dim)}
   .msg.err{color:#8a3b1f}
@@ -80,10 +84,10 @@
   </div>
   <table>
     <thead>
-      <tr><th>#</th><th>service</th><th>proxy path</th><th class="r">upstream</th></tr>
+      <tr><th>#</th><th>service</th><th>mode</th><th>route</th><th class="r">upstream</th></tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="4" class="msg">loading…</td></tr>
+      <tr><td colspan="5" class="msg">loading…</td></tr>
     </tbody>
   </table>
 </div>
@@ -99,23 +103,29 @@
       if(!r.ok) throw new Error(r.statusText);
       render(await r.json());
     }catch(e){
-      rows.innerHTML=`<tr><td colspan="4" class="msg err">fault: ${esc(e.message)}</td></tr>`;
+      rows.innerHTML=`<tr><td colspan="5" class="msg err">fault: ${esc(e.message)}</td></tr>`;
       stat.textContent='0 routes';
     }
   }
 
   function render(svc){
     if(!svc.length){
-      rows.innerHTML='<tr><td colspan="4" class="msg">no services defined</td></tr>';
+      rows.innerHTML='<tr><td colspan="5" class="msg">no services defined</td></tr>';
       stat.textContent='0 routes';return;
     }
-    rows.innerHTML=svc.map((s,i)=>`
-      <tr onclick="location.href='${esc(s.proxy_path)}'">
+    rows.innerHTML=svc.map((s,i)=>{
+      const host=(s.mode==='host');
+      const route=host?s.domain:s.proxy_path;
+      const target=host?('//'+s.domain):s.proxy_path;
+      return `
+      <tr onclick="location.href='${esc(target)}'">
         <td class="id">${String(i+1).padStart(2,'0')}</td>
         <td>${esc(s.name)}<span class="dim"> — ${esc(s.description||'')}</span></td>
-        <td class="path">${esc(s.proxy_path)}</td>
-        <td class="up">${esc(s.upstream)}${esc(s.upstream_path)}</td>
-      </tr>`).join('');
+        <td><span class="tag">${host?'host':'path'}</span></td>
+        <td class="route">${esc(route)}</td>
+        <td class="up">${esc(s.upstream)}${esc(s.upstream_path||'/')}</td>
+      </tr>`;
+    }).join('');
     stat.textContent=`${svc.length} route${svc.length!==1?'s':''}`;
   }
 

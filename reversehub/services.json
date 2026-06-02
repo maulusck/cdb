@@ -2,6 +2,7 @@
   {
     "name": "JupyterLab",
     "description": "Interactive notebooks",
+    "mode": "path",
     "upstream": "127.0.0.1:8888",
     "upstream_path": "/jupyter/",
     "proxy_path": "/jupyter/"
@@ -9,20 +10,23 @@
   {
     "name": "Grafana",
     "description": "Metrics & dashboards",
-    "upstream": "10.0.0.5:4000",
+    "mode": "path",
+    "upstream": "10.0.0.5:3000",
     "upstream_path": "/grafana/",
     "proxy_path": "/grafana/"
   },
   {
-    "name": "Code Server",
-    "description": "VS Code in browser",
-    "upstream": "127.0.0.1:8443",
-    "upstream_path": "/",
-    "proxy_path": "/code/"
+    "name": "Jellyfin",
+    "description": "Jellyfin Media server",
+    "mode": "host",
+    "domain": "jellyfin.myserver.lan",
+    "upstream": "127.0.0.1:8096",
+    "upstream_path": "/"
   },
   {
     "name": "MLflow",
     "description": "ML experiment tracking",
+    "mode": "path",
     "upstream": "127.0.0.1:5000",
     "upstream_path": "/",
     "proxy_path": "/mlflow/"
