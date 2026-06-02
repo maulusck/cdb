@@ -1,136 +1,649 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>reversehub</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>reversehub</title>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Anton&family=Share+Tech+Mono&display=swap");
 
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-  :root{
-    --bg:#b7b8b2;
-    --panel:#c3c4bd;
-    --ink:#23262a;
-    --dim:#5c605c;
-    --line:#7e817b;
-    --hair:#9a9c95;
-  }
+            :root {
+                --bg: #b4b5af;
+                --slab: #c5c6bf;
+                --slab-hi: #d6d7d0;
+                --ink: #1b1e21;
+                --steel: #43484b;
+                --dim: #62665f;
+                --line: #878a82;
+                --hair: #9c9e96;
+                --accent: #ff5a1f;
+                --accent-dk: #c8410f;
+                --ok: #3a9d63;
+            }
 
-  html,body{height:100%}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font:14px/1.5 'Share Tech Mono',monospace;
-    padding:clamp(20px,5vh,64px) clamp(16px,5vw,40px);
-    min-height:100vh;
-    display:flex;justify-content:center;align-items:flex-start;
-  }
-  body::after{
-    content:'';position:fixed;inset:0;pointer-events:none;opacity:.5;
-    background:
-      repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0 1px,transparent 1px 4px),
-      repeating-linear-gradient(90deg,rgba(0,0,0,.02) 0 1px,transparent 1px 4px);
-  }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                background: var(--bg);
+                color: var(--ink);
+                font:
+                    14px/1.55 "Share Tech Mono",
+                    monospace;
+                min-height: 100vh;
+                padding: clamp(18px, 3.5vw, 40px);
+                position: relative;
+                overflow-x: hidden;
+            }
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                opacity: 0.5;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+                mix-blend-mode: multiply;
+            }
+            body::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                opacity: 0.3;
+                background-image:
+                    linear-gradient(var(--hair) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+                background-size: 42px 42px;
+                -webkit-mask-image: radial-gradient(
+                    ellipse at 50% 0%,
+                    #000,
+                    transparent 75%
+                );
+                mask-image: radial-gradient(
+                    ellipse at 50% 0%,
+                    #000,
+                    transparent 75%
+                );
+            }
 
-  .panel{
-    width:100%;max-width:880px;
-    background:var(--panel);
-    border:2px solid var(--ink);
-    box-shadow:6px 6px 0 var(--line);
-  }
+            .shell {
+                position: relative;
+                z-index: 1;
+                max-width: 1180px;
+                margin: 0 auto;
+            }
 
-  .titlebar{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:12px 18px;background:var(--ink);color:var(--bg);
-  }
-  .titlebar .name{letter-spacing:.32em;text-transform:uppercase;font-size:15px}
-  .titlebar .stat{font-size:12px;color:var(--hair)}
+            /* ── masthead ── */
+            header {
+                border: 2px solid var(--ink);
+                background: linear-gradient(
+                    180deg,
+                    var(--slab-hi),
+                    var(--slab)
+                );
+                box-shadow: 8px 8px 0 var(--steel);
+                padding: clamp(18px, 3vw, 28px) clamp(20px, 3vw, 32px) 0;
+                margin-bottom: 30px;
+            }
+            .mast-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                gap: 18px;
+                padding-bottom: 20px;
+            }
+            .wordmark {
+                font-family: "Anton", sans-serif;
+                font-size: clamp(42px, 8.5vw, 96px);
+                line-height: 0.82;
+                letter-spacing: 0.01em;
+                text-transform: uppercase;
+                color: var(--ink);
+                text-shadow:
+                    2px 2px 0 var(--slab-hi),
+                    3px 3px 0 var(--hair),
+                    4px 5px 0 rgba(0, 0, 0, 0.18);
+            }
+            .wordmark b {
+                color: var(--accent);
+                text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+            }
+            .host {
+                font-size: 12px;
+                color: var(--steel);
+                white-space: nowrap;
+                letter-spacing: 0.06em;
+            }
+            .dot {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--hair);
+                box-shadow: 0 0 0 2px var(--slab);
+                margin-right: 7px;
+                vertical-align: 1px;
+            }
+            .dot.ok {
+                background: var(--ok);
+                box-shadow:
+                    0 0 0 2px var(--slab),
+                    0 0 7px var(--ok);
+            }
+            .dot.err {
+                background: var(--accent);
+                box-shadow:
+                    0 0 0 2px var(--slab),
+                    0 0 7px var(--accent);
+            }
 
-  table{width:100%;border-collapse:collapse}
-  thead th{
-    text-align:left;font-weight:400;color:var(--dim);
-    font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    padding:10px 18px;border-bottom:2px solid var(--ink);
-  }
-  thead th.r{text-align:right}
-  tbody tr{cursor:pointer;border-bottom:1px solid var(--hair)}
-  tbody tr:last-child{border-bottom:none}
-  tbody tr:hover{background:var(--ink);color:var(--bg)}
-  tbody tr:hover td{color:var(--bg)}
-  tbody tr:hover .tag{border-color:var(--bg);color:var(--bg)}
-  td{padding:11px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  td.id{color:var(--dim);width:1%}
-  td.dim{color:var(--dim)}
-  td.route{letter-spacing:.04em}
-  td.up{text-align:right;color:var(--dim)}
+            .mast-strip {
+                display: flex;
+                flex-wrap: wrap;
+                border-top: 2px solid var(--ink);
+            }
+            .stat {
+                flex: 1;
+                min-width: 110px;
+                padding: 11px 16px;
+                border-right: 1px solid var(--hair);
+            }
+            .stat:last-child {
+                border-right: none;
+            }
+            .stat .lbl {
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--dim);
+            }
+            .stat .num {
+                font-family: "Anton", sans-serif;
+                font-size: 28px;
+                line-height: 1;
+                color: var(--ink);
+                margin-top: 3px;
+            }
+            .stat .num.acc {
+                color: var(--accent);
+            }
 
-  .tag{
-    display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    border:1px solid var(--line);color:var(--dim);
-    padding:1px 6px;border-radius:1px;
-  }
+            /* ── controls row ── */
+            .bar {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                margin: 0 2px 16px;
+            }
+            .bar .lbl {
+                font-size: 11px;
+                letter-spacing: 0.26em;
+                text-transform: uppercase;
+                color: var(--steel);
+            }
+            .bar .rule {
+                flex: 1;
+                height: 2px;
+                background: var(--ink);
+            }
+            .toggle {
+                display: flex;
+                border: 2px solid var(--ink);
+                box-shadow: 3px 3px 0 var(--steel);
+            }
+            .toggle button {
+                font: inherit;
+                font-size: 10px;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                padding: 6px 13px;
+                background: transparent;
+                color: var(--steel);
+                border: none;
+                border-left: 1px solid var(--hair);
+                cursor: pointer;
+                transition:
+                    background 0.1s,
+                    color 0.1s;
+            }
+            .toggle button:first-child {
+                border-left: none;
+            }
+            .toggle button.on {
+                background: var(--ink);
+                color: var(--bg);
+            }
 
-  .msg{padding:30px 18px;color:var(--dim)}
-  .msg.err{color:#8a3b1f}
-</style>
-</head>
-<body>
-<div class="panel">
-  <div class="titlebar">
-    <span class="name">reversehub</span>
-    <span class="stat" id="stat">—</span>
-  </div>
-  <table>
-    <thead>
-      <tr><th>#</th><th>service</th><th>mode</th><th>route</th><th class="r">upstream</th></tr>
-    </thead>
-    <tbody id="rows">
-      <tr><td colspan="5" class="msg">loading…</td></tr>
-    </tbody>
-  </table>
-</div>
+            /* ── grid view ── */
+            #view.grid {
+                display: grid;
+                gap: 18px;
+                grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            }
 
-<script>
-  const rows=document.getElementById('rows');
-  const stat=document.getElementById('stat');
-  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            .node {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                background: linear-gradient(
+                    180deg,
+                    var(--slab-hi),
+                    var(--slab)
+                );
+                border: 2px solid var(--ink);
+                box-shadow: 6px 6px 0 var(--steel);
+                text-decoration: none;
+                color: inherit;
+                cursor: pointer;
+                transition:
+                    transform 0.12s ease,
+                    box-shadow 0.12s ease;
+                opacity: 0;
+                transform: translateY(12px);
+                animation: rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
+            .node:hover {
+                transform: translate(3px, 3px);
+                box-shadow: 3px 3px 0 var(--accent-dk);
+            }
+            .node::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                background: var(--hair);
+                transition: background 0.12s;
+            }
+            .node:hover::before {
+                background: var(--accent);
+            }
+            @keyframes rise {
+                to {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
 
-  async function load(){
-    try{
-      const r=await fetch('/services.json?_='+Date.now());
-      if(!r.ok) throw new Error(r.statusText);
-      render(await r.json());
-    }catch(e){
-      rows.innerHTML=`<tr><td colspan="5" class="msg err">fault: ${esc(e.message)}</td></tr>`;
-      stat.textContent='0 routes';
-    }
-  }
+            .node-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 9px 16px;
+                border-bottom: 2px solid var(--ink);
+                background: rgba(0, 0, 0, 0.04);
+            }
+            .idx {
+                font-size: 12px;
+                color: var(--dim);
+                letter-spacing: 0.08em;
+            }
+            .tag {
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                padding: 2px 8px;
+                border: 1px solid var(--ink);
+            }
+            .tag.host {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent-dk);
+            }
+            .tag.path {
+                background: transparent;
+                color: var(--steel);
+            }
 
-  function render(svc){
-    if(!svc.length){
-      rows.innerHTML='<tr><td colspan="5" class="msg">no services defined</td></tr>';
-      stat.textContent='0 routes';return;
-    }
-    rows.innerHTML=svc.map((s,i)=>{
-      const host=(s.mode==='host');
-      const route=host?s.domain:s.proxy_path;
-      const target=host?('//'+s.domain):s.proxy_path;
-      return `
-      <tr onclick="location.href='${esc(target)}'">
-        <td class="id">${String(i+1).padStart(2,'0')}</td>
-        <td>${esc(s.name)}<span class="dim"> — ${esc(s.description||'')}</span></td>
-        <td><span class="tag">${host?'host':'path'}</span></td>
-        <td class="route">${esc(route)}</td>
-        <td class="up">${esc(s.upstream)}${esc(s.upstream_path||'/')}</td>
-      </tr>`;
-    }).join('');
-    stat.textContent=`${svc.length} route${svc.length!==1?'s':''}`;
-  }
+            .node-body {
+                padding: 16px 16px 10px;
+                flex: 1;
+            }
+            .nm {
+                font-family: "Anton", sans-serif;
+                font-size: 23px;
+                line-height: 1;
+                text-transform: uppercase;
+                color: var(--ink);
+            }
+            .desc {
+                margin-top: 7px;
+                color: var(--dim);
+                font-size: 12.5px;
+                min-height: 1.4em;
+            }
 
-  load();
-  setInterval(load,15000);
-</script>
-</body>
+            .node-foot {
+                border-top: 1px solid var(--hair);
+                padding: 11px 40px 11px 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                font-size: 12px;
+            }
+            .kv {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .kv .k {
+                color: var(--dim);
+                letter-spacing: 0.06em;
+            }
+            .kv .v {
+                color: var(--steel);
+                text-align: right;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .kv .v.route {
+                color: var(--ink);
+            }
+            .arr {
+                position: absolute;
+                bottom: 12px;
+                right: 14px;
+                font-family: "Anton", sans-serif;
+                font-size: 18px;
+                color: var(--hair);
+                transition:
+                    color 0.12s,
+                    transform 0.12s;
+            }
+            .node:hover .arr {
+                color: var(--accent);
+                transform: translateX(3px);
+            }
+
+            /* ── list view ── */
+            #view.list {
+                display: block;
+                border: 2px solid var(--ink);
+                box-shadow: 6px 6px 0 var(--steel);
+                background: linear-gradient(
+                    180deg,
+                    var(--slab-hi),
+                    var(--slab)
+                );
+                overflow-x: auto;
+            }
+            .lhead,
+            .lrow {
+                display: grid;
+                gap: 16px;
+                align-items: center;
+                padding: 11px 18px;
+                grid-template-columns: 46px 62px minmax(130px, 1.3fr) minmax(
+                        120px,
+                        1.4fr
+                    ) minmax(120px, 1.4fr) 24px;
+                min-width: 680px;
+            }
+            .lhead {
+                border-bottom: 2px solid var(--ink);
+                font-size: 10px;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: var(--dim);
+            }
+            .lhead .r {
+                text-align: right;
+            }
+            .lrow {
+                position: relative;
+                border-bottom: 1px solid var(--hair);
+                text-decoration: none;
+                color: inherit;
+                cursor: pointer;
+                opacity: 0;
+                animation: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
+            .lrow:last-child {
+                border-bottom: none;
+            }
+            .lrow::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 0;
+                background: var(--accent);
+                transition: width 0.1s;
+            }
+            .lrow:hover {
+                background: var(--ink);
+                color: var(--bg);
+            }
+            .lrow:hover * {
+                color: var(--bg) !important;
+            }
+            .lrow:hover::before {
+                width: 4px;
+            }
+            .lrow .lid {
+                color: var(--dim);
+            }
+            .lrow .lnm {
+                font-family: "Anton", sans-serif;
+                font-size: 17px;
+                text-transform: uppercase;
+            }
+            .lrow .lup {
+                color: var(--steel);
+                text-align: right;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .lrow .larr {
+                font-family: "Anton", sans-serif;
+                text-align: right;
+                color: var(--hair);
+            }
+            .lrow:hover .larr {
+                color: var(--bg);
+            }
+
+            .msg {
+                padding: 50px 20px;
+                text-align: center;
+                color: var(--dim);
+                border: 2px dashed var(--line);
+            }
+            .msg.err {
+                color: var(--accent-dk);
+                border-color: var(--accent-dk);
+            }
+
+            footer {
+                margin-top: 28px;
+                padding-top: 13px;
+                border-top: 2px solid var(--ink);
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--dim);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="shell">
+            <header>
+                <div class="mast-top">
+                    <div class="wordmark">REVERSE<b>HUB</b></div>
+                    <div class="host">
+                        <span class="dot" id="r-dot"></span
+                        ><span id="r-host">—</span>
+                    </div>
+                </div>
+                <div class="mast-strip">
+                    <div class="stat">
+                        <div class="lbl">routes</div>
+                        <div class="num acc" id="s-total">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="lbl">path</div>
+                        <div class="num" id="s-path">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="lbl">host</div>
+                        <div class="num" id="s-host">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="lbl">status</div>
+                        <div class="num" id="s-stat">—</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="bar">
+                <span class="lbl">services</span>
+                <span class="rule"></span>
+                <div class="toggle">
+                    <button id="b-grid">grid</button>
+                    <button id="b-list">list</button>
+                </div>
+            </div>
+
+            <div id="view" class="grid"><div class="msg">loading</div></div>
+
+            <footer>
+                <span id="f-refresh">↻ 30s</span>
+                <span id="f-stamp">—</span>
+            </footer>
+        </div>
+
+        <script>
+            const view = document.getElementById("view");
+            const esc = (s) =>
+                String(s)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+            const $ = (id) => document.getElementById(id);
+
+            let mode = "grid",
+                data = [];
+            try {
+                mode = localStorage.getItem("rh_view") || "grid";
+            } catch (e) {}
+
+            $("r-host").textContent = location.host || "localhost";
+
+            function setMode(m) {
+                mode = m;
+                try {
+                    localStorage.setItem("rh_view", m);
+                } catch (e) {}
+                $("b-grid").classList.toggle("on", m === "grid");
+                $("b-list").classList.toggle("on", m === "list");
+                paint();
+            }
+            $("b-grid").onclick = () => setMode("grid");
+            $("b-list").onclick = () => setMode("list");
+
+            function target(s) {
+                return s.mode === "host" ? "//" + s.domain : s.proxy_path;
+            }
+            function route(s) {
+                return s.mode === "host" ? s.domain : s.proxy_path;
+            }
+
+            function paint() {
+                view.className = mode;
+                if (!data.length) {
+                    view.innerHTML =
+                        '<div class="msg">no services defined</div>';
+                    return;
+                }
+                view.innerHTML = mode === "grid" ? gridHTML() : listHTML();
+            }
+
+            function gridHTML() {
+                return data
+                    .map((s, i) => {
+                        const h = s.mode === "host";
+                        return `
+      <a class="node" href="${esc(target(s))}" style="animation-delay:${i * 55}ms">
+        <div class="node-top">
+          <span class="idx">${String(i + 1).padStart(2, "0")}</span>
+          <span class="tag ${h ? "host" : "path"}">${h ? "host" : "path"}</span>
+        </div>
+        <div class="node-body">
+          <div class="nm">${esc(s.name)}</div>
+          <div class="desc">${esc(s.description || "")}</div>
+        </div>
+        <div class="node-foot">
+          <div class="kv"><span class="k">route</span><span class="v route">${esc(route(s))}</span></div>
+          <div class="kv"><span class="k">upstream</span><span class="v">${esc(s.upstream)}${esc(s.upstream_path || "/")}</span></div>
+        </div>
+        <span class="arr">→</span>
+      </a>`;
+                    })
+                    .join("");
+            }
+
+            function listHTML() {
+                const head = `<div class="lhead"><span>#</span><span>mode</span><span>service</span><span>route</span><span class="r">upstream</span><span></span></div>`;
+                const rows = data
+                    .map((s, i) => {
+                        const h = s.mode === "host";
+                        return `
+      <a class="lrow" href="${esc(target(s))}" style="animation-delay:${i * 40}ms">
+        <span class="lid">${String(i + 1).padStart(2, "0")}</span>
+        <span class="tag ${h ? "host" : "path"}">${h ? "host" : "path"}</span>
+        <span class="lnm">${esc(s.name)}</span>
+        <span>${esc(route(s))}</span>
+        <span class="lup">${esc(s.upstream)}${esc(s.upstream_path || "/")}</span>
+        <span class="larr">→</span>
+      </a>`;
+                    })
+                    .join("");
+                return head + rows;
+            }
+
+            async function load() {
+                try {
+                    const r = await fetch("/services.json?_=" + Date.now());
+                    if (!r.ok) throw new Error(r.statusText);
+                    data = await r.json();
+                    const path = data.filter((s) => s.mode !== "host").length;
+                    $("s-total").textContent = data.length;
+                    $("s-path").textContent = path;
+                    $("s-host").textContent = data.length - path;
+                    $("s-stat").textContent = "ok";
+                    $("r-dot").className = "dot ok";
+                    $("f-stamp").textContent =
+                        "updated " + new Date().toTimeString().slice(0, 8);
+                    paint();
+                } catch (e) {
+                    view.className = mode;
+                    view.innerHTML = `<div class="msg err">error: ${esc(e.message)}</div>`;
+                    $("s-stat").textContent = "err";
+                    $("r-dot").className = "dot err";
+                }
+            }
+
+            setMode(mode);
+            load();
+            setInterval(load, 30000);
+        </script>
+    </body>
 </html>
