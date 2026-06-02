@@ -1,5 +1,7 @@
 #!/bin/sh
 # rh — reversehub: idempotent kill+build+start
+#   ./rh        rootless, binds 8080
+#   sudo ./rh 80   rootful, binds :80
 set -e
 
 NAME="reversehub"
@@ -14,10 +16,11 @@ fi
 echo "==> building $NAME"
 podman build -t "$NAME" "$DIR" -q
 
-echo "==> starting $NAME → http://127.0.0.1:${PORT}"
+echo "==> starting $NAME → http://0.0.0.0:${PORT}"
 podman run -d \
     --name "$NAME" \
     --rm \
     --network host \
+    -e RH_PORT="$PORT" \
     -v "$DIR/services.json":/usr/share/nginx/html/services.json:ro \
     "$NAME"

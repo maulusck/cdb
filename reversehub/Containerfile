@@ -1,18 +1,15 @@
 FROM alpine:3.21
 
-RUN apk add --no-cache nginx jq inotify-tools
-
-RUN mkdir -p /var/lib/nginx/tmp /run/nginx /etc/nginx/locations.d \
+RUN apk add --no-cache nginx jq \
+    && mkdir -p /var/lib/nginx/tmp /run/nginx /etc/nginx/locations.d \
     && chown -R nginx:nginx /var/lib/nginx /run/nginx /etc/nginx/locations.d
 
-COPY nginx.conf            /etc/nginx/nginx.conf
-COPY generate-locations.sh /generate-locations.sh
-COPY entrypoint.sh         /entrypoint.sh
-RUN chmod +x /generate-locations.sh /entrypoint.sh
+COPY nginx.conf    /etc/nginx/nginx.conf
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 COPY services.json /usr/share/nginx/html/services.json
 COPY index.html    /usr/share/nginx/html/index.html
 
 EXPOSE 80
-
 ENTRYPOINT ["/entrypoint.sh"]

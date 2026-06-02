@@ -2,33 +2,29 @@
   {
     "name": "JupyterLab",
     "description": "Interactive notebooks",
-    "icon": "⬡",
-    "port": 8888,
-    "proxy_path": "/jupyter/",
-    "upstream_path": "/"
+    "upstream": "127.0.0.1:8888",
+    "upstream_path": "/jupyter/",
+    "proxy_path": "/jupyter/"
   },
   {
     "name": "Grafana",
     "description": "Metrics & dashboards",
-    "icon": "◈",
-    "port": 3000,
-    "proxy_path": "/grafana/",
-    "upstream_path": "/grafana/"
+    "upstream": "10.0.0.5:4000",
+    "upstream_path": "/grafana/",
+    "proxy_path": "/grafana/"
   },
   {
     "name": "Code Server",
     "description": "VS Code in browser",
-    "icon": "◧",
-    "port": 8080,
-    "proxy_path": "/code/",
-    "upstream_path": "/"
+    "upstream": "127.0.0.1:8443",
+    "upstream_path": "/",
+    "proxy_path": "/code/"
   },
   {
     "name": "MLflow",
     "description": "ML experiment tracking",
-    "icon": "◉",
-    "port": 5000,
-    "proxy_path": "/mlflow/",
-    "upstream_path": "/"
+    "upstream": "127.0.0.1:5000",
+    "upstream_path": "/",
+    "proxy_path": "/mlflow/"
   }
 ]

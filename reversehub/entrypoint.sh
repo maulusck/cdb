@@ -2,22 +2,38 @@
 set -e
 
 PORT="${RH_PORT:-8080}"
+SERVICES="/usr/share/nginx/html/services.json"
+OUT="/etc/nginx/locations.d"
 
-echo "==> Generating nginx proxy locations from services.json..."
-/generate-locations.sh
+echo "==> generating proxy locations from services.json"
+mkdir -p "$OUT"
+rm -f "$OUT"/*.conf
 
-# Patch listen directive at runtime
+jq -c '.[]' "$SERVICES" | while read -r svc; do
+    name=$(echo "$svc"     | jq -r '.name')
+    upstream=$(echo "$svc" | jq -r '.upstream')
+    upath=$(echo "$svc"    | jq -r '.upstream_path')
+    ppath=$(echo "$svc"    | jq -r '.proxy_path')
+    fname=$(echo "$name" | tr '[:upper:] ' '[:lower:]_')
+
+    cat > "$OUT/${fname}.conf" <<NGINX
+location ${ppath} {
+    proxy_pass http://${upstream}${upath};
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection \$connection_upgrade;
+    proxy_read_timeout 86400;
+    proxy_buffering off;
+}
+NGINX
+    echo "  -> ${ppath} -> ${upstream}${upath}"
+done
+
 sed -i "s/__RH_PORT__/${PORT}/" /etc/nginx/nginx.conf
 
-echo "==> Starting nginx on 127.0.0.1:${PORT}..."
-nginx -g "daemon off;" &
-NGINX_PID=$!
-
-echo "==> Watching services.json for changes..."
-inotifyd - /usr/share/nginx/html/services.json:cwy | while read -r event; do
-    echo "==> services.json changed, regenerating & reloading..."
-    /generate-locations.sh
-    nginx -s reload
-done &
-
-wait $NGINX_PID
+echo "==> nginx on 0.0.0.0:${PORT}"
+exec nginx -g "daemon off;"
